@@ -1,5 +1,5 @@
 before_script:
-  - mysql -e 'create database sequelize_test;'
+  - mysql -e 'create database sequenice_test;'
 language: node_js
 node_js:
   - 0.10
