@@ -29,6 +29,11 @@
   "devDependencies": {
     "sequelize": "~2.0.0-beta.1",
     "should": "~2.0.2",
-    "mocha": "~1.14.0"
+    "mocha": "~1.14.0",
+    "mysql": "~2.0.0-alpha9"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "underscore.string": "~2.3.3"
   }
 }

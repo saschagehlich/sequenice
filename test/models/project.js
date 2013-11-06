@@ -9,3 +9,5 @@ function Project(s) {
    */
   this.belongsTo("User");
 }
+
+module.exports = Project;

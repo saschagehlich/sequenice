@@ -7,13 +7,15 @@ var should = require("should")
 before(function (done) {
   sequelize = new Sequelize("sequenice_test", "root", "");
   sequenice = new Sequenice(sequelize, {
-    modelDirectory: __dirname + "/models",
-    modelAttacher: models,
+    modelsDirectory: __dirname + "/models",
+    modelsAttacher: models,
     getterPrefix: "get",
     setterPrefix: "set"
   });
   sequelize.sync({ force: true }).success(function () {
     done()
+  }).failure(function (err) {
+    throw err[0][0];
   });
 });
 
@@ -73,7 +75,7 @@ describe("sequenice example", function () {
   describe("hooks", function () {
     it("defines a `beforeCreate` hook", function (done) {
       models.User.create().success(function (user) {
-        user.getDataValue("beforeCreateCalled").should.be.true;
+        user.beforeCreateCalled.should.be.true;
         done();
       });
     });

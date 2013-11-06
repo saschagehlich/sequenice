@@ -4,6 +4,7 @@ function User(s) {
    */
   this.field("name", s.STRING);
   this.field("isAdmin", s.BOOLEAN, { defaultValue: false });
+  this.field("beforeCreateCalled", s.BOOLEAN, { defaultValue: false });
 
   /**
    * Associations
@@ -44,11 +45,13 @@ User.prototype.setPrice = function(value) {
   this.dataValues.priceInCents = value * 100;
 };
 
-User.prototype.myBeforeCreateMethod = function(callback) {
-  this.dataValues.beforeCreateCalled = true;
+User.prototype.myBeforeCreateMethod = function(user, callback) {
+  user.beforeCreateCalled = true;
   callback();
 };
 
 User.prototype.myValidationMethod = function (callback) {
   callback();
 }
+
+module.exports = User;
