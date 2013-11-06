@@ -1,0 +1,34 @@
+{
+  "name": "sequenice",
+  "version": "0.0.1",
+  "description": "A nice model wrapper for `sequelize`",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/saschagehlich/sequenice.git"
+  },
+  "keywords": [
+    "sequelize",
+    "model",
+    "mysql",
+    "postgres",
+    "database",
+    "sql"
+  ],
+  "author": "Sascha Gehlich <sascha@gehlich.us>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saschagehlich/sequenice/issues"
+  },
+  "devDependencies": {
+    "sequelize": "~2.0.0-beta.1",
+    "should": "~2.0.2",
+    "mocha": "~1.14.0"
+  }
+}
