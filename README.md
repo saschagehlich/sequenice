@@ -1,4 +1,4 @@
-# Sequenice
+# Sequenice [![Build Status](https://travis-ci.org/saschagehlich/sequenice.png?branch=master)](https://travis-ci.org/saschagehlich/sequenice)
 
 `sequenice` is a model wrapper for `sequelize` which gives you a better and cleaner way to define models. It is based on real JavaScript objects / classes that are automatically turned into sequelize models.
 
