@@ -94,7 +94,7 @@ Product.prototype.setPrice = function (price) {
 };
 
 // Validation
-Product.prototype.isCheap = function () {
+Product.prototype.cheap = function () {
   if (this.dataValues.priceAsCents > 500) {
     throw new Error("Damn, that shit's expensive!");
   }

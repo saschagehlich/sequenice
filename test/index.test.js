@@ -5,7 +5,7 @@ var should = require("should")
   , models = {};
 
 before(function (done) {
-  sequelize = new Sequelize("sequenice_test", "root", "");
+  sequelize = new Sequelize("sequenice_test", "travis", "");
   sequenice = new Sequenice(sequelize, {
     modelsDirectory: __dirname + "/models",
     modelsAttacher: models,
