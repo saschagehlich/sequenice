@@ -33,6 +33,9 @@ function User(s) {
   this.validates("myValidationMethod")
 }
 
+User.classMethod = function() {};
+User.prototype.instanceMethod = function() {};
+
 User.prototype.getPrice = function() {
   return "$" + (this.getDataValue('priceInCents') / 100);
 };

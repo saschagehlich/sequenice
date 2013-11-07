@@ -101,7 +101,7 @@ Sequenice.prototype._loadModel = function(modelPath) {
   // Avoid that our helpers will be added as
   // instance functions to the sequelize model
   Model._methodBlacklist = _.union(
-    ['field', 'get', 'set', 'validates'],
+    ['field', 'get', 'set', 'validates', '_methodBlacklist'],
     Sequenice.ASSOCIATIONS,
     Sequenice.HOOKS
   );
@@ -266,7 +266,7 @@ Sequenice.prototype._extractMethodsFromModel = function(modelClass, instanceTarg
   // Extract class methods
   Object.keys(modelClass).forEach(function (method) {
     if(modelClass._methodBlacklist.indexOf(method) === -1) {
-      instanceTarget[method] = modelClass[method];
+      classTarget[method] = modelClass[method];
     }
   });
 };

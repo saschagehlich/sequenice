@@ -45,6 +45,25 @@ describe("sequenice example", function () {
   });
 
   /**
+   * Class / instance methods
+   */
+  describe("class methods", function () {
+    it("turn into sequelize class methods", function (done) {
+      should.exist(models.User.classMethod);
+      done();
+    });
+  });
+
+  describe("instance methods", function () {
+    it("turn into sequelize instance methods", function (done) {
+      models.User.create({ name: "Some name" }).success(function (user) {
+        should.exist(user.instanceMethod);
+        done();
+      });
+    });
+  });
+
+  /**
    * Associations
    */
   describe("associations definitions", function () {
