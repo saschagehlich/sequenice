@@ -1,7 +1,8 @@
-var path = require("path")
-  , fs = require("fs")
-  , _ = require("underscore")
-  , Sequelize = require("sequelize");
+"use strict";
+var path = require("path");
+var fs = require("fs");
+var _ = require("underscore");
+var Sequelize = require("sequelize");
 _.str = require("underscore.string");
 
 function Sequenice(sequelize, options) {
@@ -23,7 +24,7 @@ function Sequenice(sequelize, options) {
 
   this._loadModels();
   this._resolveAssociations();
-};
+}
 Sequenice.RESOLVABLE_ASSOCIATION_OPTIONS = ["joinTableModel"];
 Sequenice.ASSOCIATIONS = ["belongsTo", "hasMany", "hasOne"];
 Sequenice.HOOKS = [
@@ -61,8 +62,8 @@ Sequenice.prototype._loadModels = function() {
 Sequenice.prototype._resolveAssociations = function() {
   var self = this;
   Object.keys(this.models).forEach(function (modelName) {
-    var model = self.models[modelName]
-      , associations = model._associations;
+    var model = self.models[modelName];
+    var associations = model._associations;
     associations.forEach(function (association) {
       var options = association.options;
 
@@ -88,20 +89,20 @@ Sequenice.prototype._resolveAssociations = function() {
  * @private
  */
 Sequenice.prototype._loadModel = function(modelPath) {
-  var Model = require(modelPath)
-    , fields = {}
-    , getters = {}
-    , setters = {}
-    , validators = {}
-    , hooks = {}
-    , instanceMethods = {}
-    , classMethods = {}
-    , model, modelName, modelOptions;
+  var Model = require(modelPath);
+  var fields = {};
+  var getters = {};
+  var setters = {};
+  var validators = {};
+  var hooks = {};
+  var instanceMethods = {};
+  var classMethods = {};
+  var model, modelName, modelOptions;
 
   // Avoid that our helpers will be added as
   // instance functions to the sequelize model
   Model._methodBlacklist = _.union(
-    ['field', 'get', 'set', 'validates', '_methodBlacklist'],
+    ["field", "get", "set", "validates", "_methodBlacklist"],
     Sequenice.ASSOCIATIONS,
     Sequenice.HOOKS
   );
@@ -150,7 +151,7 @@ Sequenice.prototype._loadModel = function(modelPath) {
  */
 Sequenice.prototype._attachFieldHelperToModel = function(modelClass, target) {
   modelClass.prototype.field = function (name, type, options) {
-    opt = options || {}
+    var opt = options || {};
     opt.type = type;
     target[name] = opt;
   };
@@ -166,8 +167,8 @@ Sequenice.prototype._attachFieldHelperToModel = function(modelClass, target) {
 Sequenice.prototype._attachGetHelperToModel = function(modelClass, target) {
   var self = this;
   modelClass.prototype.get = function (attributeName) {
-    var capitalizedAttribute = _.str.capitalize(attributeName)
-      , methodName = self.options.getterPrefix + capitalizedAttribute;
+    var capitalizedAttribute = _.str.capitalize(attributeName);
+    var methodName = self.options.getterPrefix + capitalizedAttribute;
 
     target[attributeName] = modelClass.prototype[methodName];
 
@@ -185,8 +186,8 @@ Sequenice.prototype._attachGetHelperToModel = function(modelClass, target) {
 Sequenice.prototype._attachSetHelperToModel = function(modelClass, target) {
   var self = this;
   modelClass.prototype.set = function (attributeName) {
-    var capitalizedAttribute = _.str.capitalize(attributeName)
-      , methodName = self.options.setterPrefix + capitalizedAttribute;
+    var capitalizedAttribute = _.str.capitalize(attributeName);
+    var methodName = self.options.setterPrefix + capitalizedAttribute;
 
     target[attributeName] = modelClass.prototype[methodName];
 
@@ -202,7 +203,6 @@ Sequenice.prototype._attachSetHelperToModel = function(modelClass, target) {
  * @private
  */
 Sequenice.prototype._attachValidatesHelperToModel = function(modelClass, target) {
-  var self = this;
   modelClass.prototype.validates = function(methodName) {
     target[methodName] = modelClass.prototype[methodName];
     modelClass._methodBlacklist.push(methodName);
@@ -240,9 +240,9 @@ Sequenice.prototype._attachHookHelpersToModel = function(modelClass, target) {
     modelClass.prototype[hook] = function (methodName) {
       if (!target[hook]) target[hook] = [];
 
-      target[hook].push(modelClass.prototype[methodName])
+      target[hook].push(modelClass.prototype[methodName]);
       modelClass._methodBlacklist.push(methodName);
-    }
+    };
   });
 };
 
