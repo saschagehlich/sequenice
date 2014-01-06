@@ -1,7 +1,7 @@
 0.0.4 (Jan 6 2014)
 ==================
 
-* Only add indices if they don't exist anymore (syncing mechanism)
+* Only add indices if they don't exist already (syncing mechanism)
 
 0.0.3 (Jan 6 2014)
 ==================
