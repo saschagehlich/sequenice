@@ -5,6 +5,7 @@ var _ = require("underscore");
 var Sequelize = require("sequelize");
 var Utils = Sequelize.Utils;
 _.str = require("underscore.string");
+var IndicesSyncer = require("./lib/indices-syncer");
 
 function Sequenice(sequelize, options) {
   if (!sequelize) throw new Error("sequenice needs an instance of sequelize");
@@ -305,28 +306,7 @@ Sequenice.prototype._extractMethodsFromModel = function(modelClass, instanceTarg
  */
 Sequenice.prototype._overrideSyncWithIndices = function(model, indices) {
   var sync = model.sync;
-  var self = this;
-
-  // Gets called after syncing has been done
-  // Creates indices for this model
-  var addIndices = function (emitter, m) {
-    var chain = new Sequelize.Utils.QueryChainer();
-    var index;
-    for(var i = 0; i < indices.length; i++) {
-      index = indices[i];
-      chain.add(
-        self.sequelize.queryInterface.addIndex(model.tableName, index.attributes, index.options)
-      );
-    }
-
-    chain.run()
-      .success(function () {
-        emitter.emit("success", m);
-      })
-      .error(function (e) {
-        emitter.emit("error", e);
-      });
-  };
+  var sequelize = this.sequelize;
 
   // Override syncing method so that it calls
   // addIndices() afterwards
@@ -335,7 +315,13 @@ Sequenice.prototype._overrideSyncWithIndices = function(model, indices) {
     return new Utils.CustomEventEmitter(function(emitter) {
       sync.apply(self, arguments)
         .success(function (m) {
-          addIndices(emitter, m);
+
+          // Sequelize's syncing worked, run the index syncing mechanism
+          var indicesSyncer = new IndicesSyncer(sequelize, m, indices);
+          indicesSyncer
+            .sync()
+            .proxy(emitter);
+
         })
         .error(function (e) {
           emitter.emit("error", e);

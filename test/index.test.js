@@ -1,4 +1,5 @@
 "use strict";
+var _ = require("underscore");
 var should = require("should");
 var Sequelize = require("sequelize");
 var Sequenice = require("..");
@@ -21,6 +22,10 @@ before(function (done) {
   chain.run().success(function () {
     done();
   }).failure(function (err) {
+    if (err instanceof Array) {
+      err = _.flatten(err)[0];
+    }
+
     throw err;
   });
 });
@@ -124,9 +129,20 @@ describe("sequenice example", function () {
       indices.length.should.equal(3);
 
       indices[1].name.should.equal("IdName");
-      indices[2].name.should.equal("NameIsAdmin");
+      indices[2].name.should.equal("users_name_is_admin");
 
       done();
+    });
+  });
+
+  it("only creates indices if they don't exist", function (done) {
+    sequelize.sync().success(function () {
+      done();
+    }).failure(function (err) {
+      if (err instanceof Array) {
+        err = _.flatten(err)[0];
+      }
+      throw err;
     });
   });
 });

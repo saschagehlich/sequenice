@@ -37,7 +37,7 @@ function User(s) {
    * Indices
    */
   this.index(["id", "name"], { indexName: "IdName" });
-  this.index(["name", "isAdmin"], { indexName: "NameIsAdmin" });
+  this.index(["name", "isAdmin"]);
 }
 
 User.classMethod = function() {};
