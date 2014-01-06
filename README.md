@@ -78,6 +78,11 @@ function Product(s) {
 
   // Indices
   this.index(["name", "isPublished"], { indexName: "NameIsPublished" });
+
+  // Model options
+  this.options({
+    timestamps: false
+  });
 }
 
 // This will be called before a Product is created

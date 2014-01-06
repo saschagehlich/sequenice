@@ -122,6 +122,18 @@ describe("sequenice example", function () {
   });
 
   /**
+   * Options
+   */
+  it("should apply the options", function (done) {
+    sequelize.queryInterface.describeTable("Projects").success(function (columns) {
+      should.not.exist(columns.createdAt);
+      should.not.exist(columns.updatedAt);
+
+      done();
+    });
+  });
+
+  /**
    * Indices
    */
   it("creates indices", function (done) {

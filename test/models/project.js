@@ -1,3 +1,4 @@
+"use strict";
 function Project(s) {
   /**
    * Field declarations
@@ -8,6 +9,13 @@ function Project(s) {
    * Associations
    */
   this.belongsTo("User");
+
+  /**
+   * Options
+   */
+  this.options({
+    timestamps: false
+  });
 }
 
 module.exports = Project;

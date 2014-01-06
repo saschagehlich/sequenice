@@ -105,6 +105,7 @@ Sequenice.prototype._loadModel = function(modelPath) {
   var indices = [];
   var instanceMethods = {};
   var classMethods = {};
+  var options = {};
   var model, modelName, modelOptions;
 
   // Avoid that our helpers will be added as
@@ -124,6 +125,7 @@ Sequenice.prototype._loadModel = function(modelPath) {
   this._attachAssociationHelpersToModel(Model);
   this._attachHookHelpersToModel(Model, hooks);
   this._attachIndexHelperToModel(Model, indices);
+  this._attachOptionsHelperToModel(Model, options);
   this._extractMethodsFromModel(Model, instanceMethods, classMethods);
 
   // Call the model constructor so that our
@@ -132,14 +134,14 @@ Sequenice.prototype._loadModel = function(modelPath) {
 
   // Define the sequelize model
   modelName = model.constructor.name;
-  modelOptions = {
+  modelOptions = _.extend({
     instanceMethods: instanceMethods,
     classMethods: classMethods,
     validate: validators,
     getterMethods: getters,
     setterMethods: setters,
     hooks: hooks
-  };
+  }, options);
   model._model = this.sequelize.define(modelName, fields, modelOptions);
 
   // Override the sync method so that it automatically
@@ -269,6 +271,19 @@ Sequenice.prototype._attachHookHelpersToModel = function(modelClass, target) {
 Sequenice.prototype._attachIndexHelperToModel = function(modelClass, target) {
   modelClass.prototype.index = function (attributes, options) {
     target.push({ attributes: attributes, options: options });
+  };
+};
+
+/**
+ * Adds a `options` prototype method to modelClass
+ * which will add options to the target
+ * @param  {Class} modelClass
+ * @param  {Object} target
+ * @private
+ */
+Sequenice.prototype._attachOptionsHelperToModel = function(modelClass, target) {
+  modelClass.prototype.options = function (options) {
+    _.extend(target, options);
   };
 };
 
