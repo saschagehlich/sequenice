@@ -75,6 +75,9 @@ function Product(s) {
   // Validations
   // Pass the validation method name as a string.
   this.validates("cheap");
+
+  // Indices
+  this.index(["name", "isPublished"], { indexName: "NameIsPublished" });
 }
 
 // This will be called before a Product is created
