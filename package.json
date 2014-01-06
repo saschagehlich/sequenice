@@ -1,6 +1,6 @@
 {
   "name": "sequenice",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A nice model wrapper for `sequelize`",
   "main": "index.js",
   "directories": {
