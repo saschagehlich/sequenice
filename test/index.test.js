@@ -1,21 +1,27 @@
-var should = require("should")
-  , Sequelize = require("sequelize")
-  , Sequenice = require("..")
-  , sequelize, sequenice
-  , models = {};
+"use strict";
+var should = require("should");
+var Sequelize = require("sequelize");
+var Sequenice = require("..");
+var sequelize, sequenice;
+var models = {};
 
 before(function (done) {
-  sequelize = new Sequelize("sequenice_test", "travis", "");
+  sequelize = new Sequelize("sequenice_test", "root");
   sequenice = new Sequenice(sequelize, {
     modelsDirectory: __dirname + "/models",
     modelsAttacher: models,
     getterPrefix: "get",
     setterPrefix: "set"
   });
-  sequelize.sync({ force: true }).success(function () {
-    done()
+  var chain = new Sequelize.Utils.QueryChainer();
+
+  chain.add(sequelize.dropAllSchemas());
+  chain.add(sequelize.sync());
+
+  chain.run().success(function () {
+    done();
   }).failure(function (err) {
-    throw err[0][0];
+    throw err;
   });
 });
 
@@ -94,7 +100,7 @@ describe("sequenice example", function () {
   describe("hooks", function () {
     it("defines a `beforeCreate` hook", function (done) {
       models.User.create().success(function (user) {
-        user.beforeCreateCalled.should.be.true;
+        user.beforeCreateCalled.should.equal(true);
         done();
       });
     });
@@ -108,5 +114,19 @@ describe("sequenice example", function () {
     models.User.build({ priceInCents: 30 * 100 }).price.should.equal("$" + 30);
 
     done();
+  });
+
+  /**
+   * Indices
+   */
+  it("creates indices", function (done) {
+    sequelize.queryInterface.showIndex("Users").success(function (indices) {
+      indices.length.should.equal(3);
+
+      indices[1].name.should.equal("IdName");
+      indices[2].name.should.equal("NameIsAdmin");
+
+      done();
+    });
   });
 });

@@ -1,3 +1,4 @@
+"use strict";
 function User(s) {
   /**
    * Field declarations
@@ -30,14 +31,20 @@ function User(s) {
   /**
    * Validations
    */
-  this.validates("myValidationMethod")
+  this.validates("myValidationMethod");
+
+  /**
+   * Indices
+   */
+  this.index(["id", "name"], { indexName: "IdName" });
+  this.index(["name", "isAdmin"], { indexName: "NameIsAdmin" });
 }
 
 User.classMethod = function() {};
 User.prototype.instanceMethod = function() {};
 
 User.prototype.getPrice = function() {
-  return "$" + (this.getDataValue('priceInCents') / 100);
+  return "$" + (this.getDataValue("priceInCents") / 100);
 };
 
 User.prototype.getPriceInCents = function() {
@@ -55,6 +62,6 @@ User.prototype.myBeforeCreateMethod = function(user, callback) {
 
 User.prototype.myValidationMethod = function (callback) {
   callback();
-}
+};
 
 module.exports = User;

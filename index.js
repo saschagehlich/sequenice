@@ -3,6 +3,7 @@ var path = require("path");
 var fs = require("fs");
 var _ = require("underscore");
 var Sequelize = require("sequelize");
+var Utils = Sequelize.Utils;
 _.str = require("underscore.string");
 
 function Sequenice(sequelize, options) {
@@ -25,6 +26,11 @@ function Sequenice(sequelize, options) {
   this._loadModels();
   this._resolveAssociations();
 }
+
+/**
+ * Available sequelize keywords
+ * @type {Array}
+ */
 Sequenice.RESOLVABLE_ASSOCIATION_OPTIONS = ["joinTableModel"];
 Sequenice.ASSOCIATIONS = ["belongsTo", "hasMany", "hasOne"];
 Sequenice.HOOKS = [
@@ -95,6 +101,7 @@ Sequenice.prototype._loadModel = function(modelPath) {
   var setters = {};
   var validators = {};
   var hooks = {};
+  var indices = [];
   var instanceMethods = {};
   var classMethods = {};
   var model, modelName, modelOptions;
@@ -115,6 +122,7 @@ Sequenice.prototype._loadModel = function(modelPath) {
   this._attachValidatesHelperToModel(Model, validators);
   this._attachAssociationHelpersToModel(Model);
   this._attachHookHelpersToModel(Model, hooks);
+  this._attachIndexHelperToModel(Model, indices);
   this._extractMethodsFromModel(Model, instanceMethods, classMethods);
 
   // Call the model constructor so that our
@@ -132,6 +140,10 @@ Sequenice.prototype._loadModel = function(modelPath) {
     hooks: hooks
   };
   model._model = this.sequelize.define(modelName, fields, modelOptions);
+
+  // Override the sync method so that it automatically
+  // adds the given indices
+  this._overrideSyncWithIndices(model._model, indices);
 
   // Attach the real sequelize models to the modelsAttacher.
   // Since modelsAttacher defaults to `global`, we will make
@@ -247,6 +259,19 @@ Sequenice.prototype._attachHookHelpersToModel = function(modelClass, target) {
 };
 
 /**
+ * Adds a `index` prototype method to modelClass
+ * which will add a new index
+ * @param  {Class} modelClass
+ * @param  {Object} target
+ * @private
+ */
+Sequenice.prototype._attachIndexHelperToModel = function(modelClass, target) {
+  modelClass.prototype.index = function (attributes, options) {
+    target.push({ attributes: attributes, options: options });
+  };
+};
+
+/**
  * Extracts instance methods and class methods from the given
  * model class, excluding all methods in `modelClass._methodBlacklist`
  * and adds them to `instanceTarget` and `classTarget`
@@ -269,6 +294,54 @@ Sequenice.prototype._extractMethodsFromModel = function(modelClass, instanceTarg
       classTarget[method] = modelClass[method];
     }
   });
+};
+
+/**
+ * Overrides model.sync() to add incides after the syncing
+ * has been done
+ * @param  {Model} model
+ * @param  {Array} indices
+ * @private
+ */
+Sequenice.prototype._overrideSyncWithIndices = function(model, indices) {
+  var sync = model.sync;
+  var self = this;
+
+  // Gets called after syncing has been done
+  // Creates indices for this model
+  var addIndices = function (emitter, m) {
+    var chain = new Sequelize.Utils.QueryChainer();
+    var index;
+    for(var i = 0; i < indices.length; i++) {
+      index = indices[i];
+      chain.add(
+        self.sequelize.queryInterface.addIndex(model.tableName, index.attributes, index.options)
+      );
+    }
+
+    chain.run()
+      .success(function () {
+        emitter.emit("success", m);
+      })
+      .error(function (e) {
+        emitter.emit("error", e);
+      });
+  };
+
+  // Override syncing method so that it calls
+  // addIndices() afterwards
+  model.sync = function () {
+    var self = this;
+    return new Utils.CustomEventEmitter(function(emitter) {
+      sync.apply(self, arguments)
+        .success(function (m) {
+          addIndices(emitter, m);
+        })
+        .error(function (e) {
+          emitter.emit("error", e);
+        });
+    }).run();
+  };
 };
 
 module.exports = Sequenice;
