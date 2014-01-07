@@ -4,6 +4,7 @@
 * Models now take a model as the constructor parameter instead of the sequelize model. All helpers will be called on that map.
 * Added error message for missing association models
 * Added a `modelMatch` option (can be a string, a regular expression or a function)
+* New default `getterPrefix` and `setterPrefix` are `_get` and `_set`
 
 0.0.5 (Jan 6 2014)
 ==================
