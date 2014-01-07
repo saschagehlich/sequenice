@@ -188,7 +188,7 @@ describe("sequenice example", function () {
       should.not.exist(models.Project);
       should.not.exist(models.User);
 
-      done()
+      done();
     });
 
     it("should support a function value", function (done) {
