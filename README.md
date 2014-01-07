@@ -31,6 +31,7 @@ Since `sequenice` is just a model wrapper for `sequelize`, you will have to init
 var Sequenice = require("sequenice")
   , new Sequenice(database, {
     modelsDirectory: __dirname + "/models", // The path to your models folder
+    modelsMatch: "**/*.js", // A string, regex or filter function for selecting the correct files
     modelsAttacher: global, // The object you want to attach your models to
     getterPrefix: "get", // See "Defining models"
     setterPrefix: "set", // See "Defining models"
@@ -46,41 +47,39 @@ Inside the constructor you have access to a couple of helpers which will define 
 Here's an example:
 
 ```js
-function Product(s) {
-  // `s` points to the Sequelize module
-
+function Product(map) {
   // Field definitions
-  this.field("name", s.STRING);
-  this.field("isPublished", s.BOOLEAN, { defaultValue: false });
+  map.field("name", s.STRING);
+  map.field("isPublished", s.BOOLEAN, { defaultValue: false });
 
   // Associations
   // hasOne, belongsTo, hasMany
   // Pass the associated model name as a string.
-  this.hasMany("Variants");
-  this.belongsTo("Category");
+  map.hasMany("Variants");
+  map.belongsTo("Category");
 
   // Hooks
   // beforeValidate, beforeCreate, ...
   // Pass the method name as a string.
-  this.beforeCreate("publish");
+  map.beforeCreate("publish");
 
   // Getters / Setters
   // Define getterMethods and setterMethods. Pass the variable name
   // as a string.
   // If your getterPrefix is "get" and the variable name is "price",
   // sequenice will try to call the "getPrice" method of your class.
-  this.get("price");
-  this.set("price");
+  map.get("price");
+  map.set("price");
 
   // Validations
   // Pass the validation method name as a string.
-  this.validates("cheap");
+  map.validates("cheap");
 
   // Indices
-  this.index(["name", "isPublished"], { indexName: "NameIsPublished" });
+  map.index(["name", "isPublished"], { indexName: "NameIsPublished" });
 
   // Model options
-  this.options({
+  map.options({
     timestamps: false
   });
 }
