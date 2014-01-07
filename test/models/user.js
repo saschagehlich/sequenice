@@ -1,57 +1,57 @@
 "use strict";
-function User(s) {
+function User(m) {
   /**
    * Field declarations
    */
-  this.field("name", s.STRING);
-  this.field("isAdmin", s.BOOLEAN, { defaultValue: false });
-  this.field("beforeCreateCalled", s.BOOLEAN, { defaultValue: false });
+  m.field("name", m.STRING);
+  m.field("isAdmin", m.BOOLEAN, { defaultValue: false });
+  m.field("beforeCreateCalled", m.BOOLEAN, { defaultValue: false });
 
   /**
    * Associations
    */
-  this.hasMany("Project");
+  m.hasMany("Project");
 
   /**
    * Getters
    */
-  this.get("price");
-  this.get("priceInCents");
+  m.get("price");
+  m.get("priceInCents");
 
   /**
    * Setters
    */
-  this.set("price");
+  m.set("price");
 
   /**
    * Hooks
    */
-  this.beforeCreate("myBeforeCreateMethod");
+  m.beforeCreate("myBeforeCreateMethod");
 
   /**
    * Validations
    */
-  this.validates("myValidationMethod");
+  m.validates("myValidationMethod");
 
   /**
    * Indices
    */
-  this.index(["id", "name"], { indexName: "IdName" });
-  this.index(["name", "isAdmin"]);
+  m.index(["id", "name"], { indexName: "IdName" });
+  m.index(["name", "isAdmin"]);
 }
 
 User.classMethod = function() {};
 User.prototype.instanceMethod = function() {};
 
-User.prototype.getPrice = function() {
+User.prototype._getPrice = function() {
   return "$" + (this.getDataValue("priceInCents") / 100);
 };
 
-User.prototype.getPriceInCents = function() {
+User.prototype._getPriceInCents = function() {
   return this.dataValues.priceInCents;
 };
 
-User.prototype.setPrice = function(value) {
+User.prototype._setPrice = function(value) {
   this.dataValues.priceInCents = value * 100;
 };
 

@@ -10,9 +10,8 @@ before(function (done) {
   sequelize = new Sequelize("sequenice_test", "root");
   sequenice = new Sequenice(sequelize, {
     modelsDirectory: __dirname + "/models",
-    modelsAttacher: models,
-    getterPrefix: "get",
-    setterPrefix: "set"
+    modelsMatch: "*.js",
+    modelsAttacher: models
   });
   var chain = new Sequelize.Utils.QueryChainer();
 
@@ -155,6 +154,58 @@ describe("sequenice example", function () {
         err = _.flatten(err)[0];
       }
       throw err;
+    });
+  });
+
+  /**
+   * modelsMatch option
+   */
+  describe("`modelsMatch` option", function () {
+    it("should support a string value (blob)", function (done) {
+      sequenice.dispose();
+      sequenice = new Sequenice(sequelize, {
+        modelsDirectory: __dirname + "/models",
+        modelsMatch: "**/*.js",
+        modelsAttacher: models
+      });
+
+      should.exist(models.AdminUser);
+      should.exist(models.Project);
+      should.exist(models.User);
+
+      done();
+    });
+
+    it("should support a regex value", function (done) {
+      sequenice.dispose();
+      sequenice = new Sequenice(sequelize, {
+        modelsDirectory: __dirname + "/models",
+        modelsMatch: /admin\/user\.js$/i,
+        modelsAttacher: models
+      });
+
+      should.exist(models.AdminUser);
+      should.not.exist(models.Project);
+      should.not.exist(models.User);
+
+      done()
+    });
+
+    it("should support a function value", function (done) {
+      sequenice.dispose();
+      sequenice = new Sequenice(sequelize, {
+        modelsDirectory: __dirname + "/models",
+        modelsMatch: function (m) {
+          return !!/admin\/user\.js/i.test(m);
+        },
+        modelsAttacher: models
+      });
+
+      should.exist(models.AdminUser);
+      should.not.exist(models.Project);
+      should.not.exist(models.User);
+
+      done();
     });
   });
 });

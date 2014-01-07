@@ -1,19 +1,19 @@
 "use strict";
-function Project(s) {
+function Project(m) {
   /**
    * Field declarations
    */
-  this.field("name", s.STRING);
+  m.field("name", m.STRING);
 
   /**
    * Associations
    */
-  this.belongsTo("User");
+  m.belongsTo("User");
 
   /**
    * Options
    */
-  this.options({
+  m.options({
     timestamps: false
   });
 }

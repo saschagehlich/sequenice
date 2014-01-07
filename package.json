@@ -33,6 +33,7 @@
     "mysql": "~2.0.0-alpha9"
   },
   "dependencies": {
+    "globule": "~0.1.0",
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3"
   }
