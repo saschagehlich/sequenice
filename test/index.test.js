@@ -116,7 +116,7 @@ describe('sequenice example', function () {
    * Getters / setters
    */
   it('defines getters and setters', function (done) {
-    // models.User.build({ price: 20 }).priceInCents.should.equal(20 * 100)
+    models.User.build({ price: 20 }).priceInCents.should.equal(20 * 100)
     models.User.build({ priceInCents: 30 * 100 }).price.should.equal('$30')
 
     done()
