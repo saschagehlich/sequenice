@@ -108,7 +108,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* global __non_webpack_require__ */
+
 
 var _path = __webpack_require__(3);
 
@@ -229,7 +230,11 @@ var Sequenize = function () {
   }, {
     key: '_loadModel',
     value: function _loadModel(modelPath) {
-      var Model = require(modelPath).default || require(modelPath);
+      /* eslint-disable camelcase */
+      var req =  false ? require : require;
+      /* eslint-enable camelcase */
+
+      var Model = req(modelPath).default || req(modelPath);
       var map = {};
       var fields = {};
       var getters = {};
