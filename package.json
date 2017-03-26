@@ -1,13 +1,12 @@
 {
   "name": "sequenice",
-  "version": "0.0.6",
-  "description": "A nice model wrapper for `sequelize`",
-  "main": "./build/index.js",
-  "directories": {
-    "example": "example"
-  },
+  "version": "0.1.0",
+  "description": "An object-oriented model definition alternative for `sequelize`",
+  "main": "./dist/sequenice.js",
   "scripts": {
-    "test": "mocha --require babel-register --reporter spec test -- --harmony"
+    "test": "mocha --require babel-register --reporter spec test",
+    "build:publish": "rimraf build && webpack",
+    "prepublish": "npm run build:publish"
   },
   "repository": {
     "type": "git",
@@ -32,7 +31,8 @@
     "mysql",
     "postgres",
     "database",
-    "sql"
+    "sql",
+    "sqlite"
   ],
   "author": "Sascha Gehlich <sascha@gehlich.us>",
   "license": "MIT",
@@ -40,13 +40,17 @@
     "url": "https://github.com/saschagehlich/sequenice/issues"
   },
   "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
     "babel-plugin-transform-class-properties": "^6.23.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-register": "^6.24.0",
     "mocha": "~1.14.0",
+    "rimraf": "^2.6.1",
     "sequelize": "4.0.0-2",
     "should": "~2.0.2",
-    "sqlite3": "^3.1.8"
+    "sqlite3": "^3.1.8",
+    "webpack": "^2.3.2"
   },
   "dependencies": {
     "globule": "~0.1.0",

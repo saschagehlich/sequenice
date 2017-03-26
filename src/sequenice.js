@@ -1,3 +1,4 @@
+/* global __non_webpack_require__ */
 import path from 'path'
 import fs from 'fs'
 
@@ -11,14 +12,13 @@ export default class Sequenize {
     this.sequelize = sequelize
     this.models = {}
 
-    const defaultModelsDirectory = path.resolve(
-      path.dirname(module.parent.id),
-      'models'
-    )
+    if (!options.modelsDirectory) {
+      throw new Error('Sequenice: No `modelsDirectory` given.')
+    }
 
     this._options = _.clone(options)
     _.defaults(this._options, {
-      modelsDirectory: defaultModelsDirectory,
+      modelsDirectory: null,
       modelsAttacher: global,
       getterPrefix: '_get',
       setterPrefix: '_set'
@@ -97,7 +97,11 @@ export default class Sequenize {
    * @private
    */
   _loadModel (modelPath) {
-    const Model = require(modelPath).default || require(modelPath)
+    /* eslint-disable camelcase */
+    const req = typeof __non_webpack_require__ === 'undefined' ? require : __non_webpack_require__
+    /* eslint-enable camelcase */
+
+    const Model = req(modelPath).default || req(modelPath)
     const map = {}
     const fields = {}
     const getters = {}
