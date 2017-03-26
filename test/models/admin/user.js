@@ -1,10 +1,8 @@
-"use strict";
-
-function AdminUser(m) {
-  /**
-   * Field declarations
-   */
-  m.field("name", m.STRING);
+export default class AdminUser {
+  constructor (m) {
+    /**
+     * Field declarations
+     */
+    m.field('name', m.STRING)
+  }
 }
-
-module.exports = AdminUser;

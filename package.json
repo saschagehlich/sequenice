@@ -2,16 +2,29 @@
   "name": "sequenice",
   "version": "0.0.6",
   "description": "A nice model wrapper for `sequelize`",
-  "main": "index.js",
+  "main": "./build/index.js",
   "directories": {
     "example": "example"
   },
   "scripts": {
-    "test": "make test"
+    "test": "mocha --require babel-register --reporter spec test -- --harmony"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/saschagehlich/sequenice.git"
+  },
+  "standard": {
+    "globals": [
+      "describe",
+      "context",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect"
+    ],
+    "parser": "babel-eslint"
   },
   "keywords": [
     "sequelize",
@@ -27,14 +40,16 @@
     "url": "https://github.com/saschagehlich/sequenice/issues"
   },
   "devDependencies": {
-    "sequelize": "~2.0.0-beta.1",
-    "should": "~2.0.2",
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-register": "^6.24.0",
     "mocha": "~1.14.0",
-    "mysql": "~2.0.0-alpha9"
+    "sequelize": "4.0.0-2",
+    "should": "~2.0.2",
+    "sqlite3": "^3.1.8"
   },
   "dependencies": {
     "globule": "~0.1.0",
-    "underscore": "~1.5.2",
-    "underscore.string": "~2.3.3"
+    "lodash": "^4.17.4"
   }
 }

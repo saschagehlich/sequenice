@@ -1,21 +1,20 @@
-"use strict";
-function Project(m) {
-  /**
-   * Field declarations
-   */
-  m.field("name", m.STRING);
+export default class Project {
+  constructor (m) {
+    /**
+     * Field declarations
+     */
+    m.field('name', m.STRING)
 
-  /**
-   * Associations
-   */
-  m.belongsTo("User");
+    /**
+     * Associations
+     */
+    m.belongsTo('User')
 
-  /**
-   * Options
-   */
-  m.options({
-    timestamps: false
-  });
+    /**
+     * Options
+     */
+    m.options({
+      timestamps: false
+    })
+  }
 }
-
-module.exports = Project;
