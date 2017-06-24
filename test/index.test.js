@@ -6,32 +6,32 @@ import Sequenice from '../src/sequenice'
 let sequelize
 let models = {}
 
-before(function (done) {
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: ':memory:'
-  })
-
-  /* eslint-disable no-new */
-  new Sequenice(sequelize, {
-    modelsDirectory: path.resolve(__dirname, 'models'),
-    modelsAttacher: models
-  })
-  /* eslint-enable no-new */
-
-  sequelize.dropAllSchemas()
-    .then(() => sequelize.sync())
-    .then(() => done())
-    .catch(err => {
-      if (err instanceof Array) {
-        err = _.flatten(err)[0]
-      }
-
-      throw err
-    })
-})
-
 describe('sequenice example', function () {
+  before(function (done) {
+    sequelize = new Sequelize({
+      dialect: 'sqlite',
+      storage: ':memory:'
+    })
+
+    /* eslint-disable no-new */
+    new Sequenice(sequelize, {
+      modelsDirectory: path.resolve(__dirname, 'models'),
+      modelsAttacher: models
+    })
+    /* eslint-enable no-new */
+
+    sequelize.dropAllSchemas()
+      .then(() => sequelize.sync())
+      .then(() => done())
+      .catch(err => {
+        if (err instanceof Array) {
+          err = _.flatten(err)[0]
+        }
+
+        throw err
+      })
+  })
+
   /**
    * Field definitions
    */

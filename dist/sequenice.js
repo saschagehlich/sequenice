@@ -7,9 +7,9 @@ module.exports =
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -142,8 +142,8 @@ var Sequenize = function () {
     this.sequelize = sequelize;
     this.models = {};
 
-    if (!options.modelsDirectory) {
-      throw new Error('Sequenice: No `modelsDirectory` given.');
+    if (!options.modelsDirectory && !options.models) {
+      throw new Error('Sequenice: No `modelsDirectory` or `models` given.');
     }
 
     this._options = _lodash2.default.clone(options);
@@ -169,22 +169,36 @@ var Sequenize = function () {
     value: function _loadModels() {
       var _this = this;
 
-      var modelsDirectory = this._options.modelsDirectory;
+      var _options = this._options,
+          modelsDirectory = _options.modelsDirectory,
+          models = _options.models;
 
 
-      if (!_fs2.default.existsSync(modelsDirectory)) {
-        throw new Error('Models directory not found: ' + modelsDirectory);
+      if (!modelsDirectory && models) {
+        models.forEach(function (Model) {
+          _this._loadModel(Model);
+        });
+      } else if (modelsDirectory) {
+        /* eslint-disable camelcase */
+        var req =  false ? require : require;
+        /* eslint-enable camelcase */
+
+        if (!_fs2.default.existsSync(modelsDirectory)) {
+          throw new Error('Models directory not found: ' + modelsDirectory);
+        }
+
+        var files = _globule2.default.find('**/*', {
+          cwd: modelsDirectory,
+          filter: 'isFile'
+        });
+
+        files.forEach(function (file) {
+          var modelPath = _path2.default.resolve(modelsDirectory, file);
+          var Model = req(modelPath).default || req(modelPath);
+
+          _this._loadModel(Model);
+        });
       }
-
-      var files = _globule2.default.find('**/*', {
-        cwd: modelsDirectory,
-        filter: 'isFile'
-      });
-
-      files.forEach(function (file) {
-        var modelPath = _path2.default.resolve(modelsDirectory, file);
-        _this._loadModel(modelPath);
-      });
     }
 
     /**
@@ -222,19 +236,14 @@ var Sequenize = function () {
     }
 
     /**
-     * Loads a model from the given modelPath
-     * @param  {String} modelPath
+     * Loads the given Model
+     * @param  {Class} Model
      * @private
      */
 
   }, {
     key: '_loadModel',
-    value: function _loadModel(modelPath) {
-      /* eslint-disable camelcase */
-      var req =  false ? require : require;
-      /* eslint-enable camelcase */
-
-      var Model = req(modelPath).default || req(modelPath);
+    value: function _loadModel(Model) {
       var map = {};
       var fields = {};
       var getters = {};

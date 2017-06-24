@@ -12,8 +12,8 @@ export default class Sequenize {
     this.sequelize = sequelize
     this.models = {}
 
-    if (!options.modelsDirectory) {
-      throw new Error('Sequenice: No `modelsDirectory` given.')
+    if (!options.modelsDirectory && !options.models) {
+      throw new Error('Sequenice: No `modelsDirectory` or `models` given.')
     }
 
     this._options = _.clone(options)
@@ -43,21 +43,33 @@ export default class Sequenize {
    * @private
    */
   _loadModels () {
-    const { modelsDirectory } = this._options
+    const { modelsDirectory, models } = this._options
 
-    if (!fs.existsSync(modelsDirectory)) {
-      throw new Error(`Models directory not found: ${modelsDirectory}`)
+    if (!modelsDirectory && models) {
+      models.forEach(Model => {
+        this._loadModel(Model)
+      })
+    } else if (modelsDirectory) {
+      /* eslint-disable camelcase */
+      const req = typeof __non_webpack_require__ === 'undefined' ? require : __non_webpack_require__
+      /* eslint-enable camelcase */
+
+      if (!fs.existsSync(modelsDirectory)) {
+        throw new Error(`Models directory not found: ${modelsDirectory}`)
+      }
+
+      const files = globule.find('**/*', {
+        cwd: modelsDirectory,
+        filter: 'isFile'
+      })
+
+      files.forEach((file) => {
+        const modelPath = path.resolve(modelsDirectory, file)
+        const Model = req(modelPath).default || req(modelPath)
+
+        this._loadModel(Model)
+      })
     }
-
-    const files = globule.find('**/*', {
-      cwd: modelsDirectory,
-      filter: 'isFile'
-    })
-
-    files.forEach((file) => {
-      const modelPath = path.resolve(modelsDirectory, file)
-      this._loadModel(modelPath)
-    })
   }
 
   /**
@@ -92,16 +104,11 @@ export default class Sequenize {
   }
 
   /**
-   * Loads a model from the given modelPath
-   * @param  {String} modelPath
+   * Loads the given Model
+   * @param  {Class} Model
    * @private
    */
-  _loadModel (modelPath) {
-    /* eslint-disable camelcase */
-    const req = typeof __non_webpack_require__ === 'undefined' ? require : __non_webpack_require__
-    /* eslint-enable camelcase */
-
-    const Model = req(modelPath).default || req(modelPath)
+  _loadModel (Model) {
     const map = {}
     const fields = {}
     const getters = {}
