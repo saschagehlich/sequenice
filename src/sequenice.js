@@ -21,7 +21,8 @@ export default class Sequenize {
       modelsDirectory: null,
       modelsAttacher: global,
       getterPrefix: '_get',
-      setterPrefix: '_set'
+      setterPrefix: '_set',
+      modelsMatch: /\.(js|coffee)$/i
     })
 
     this._loadModels()
@@ -60,7 +61,9 @@ export default class Sequenize {
 
       const files = globule.find('**/*', {
         cwd: modelsDirectory,
-        filter: 'isFile'
+        filter: f => {
+          return fs.statSync(f).isFile() && this._options.modelsMatch.test(f)
+        }
       })
 
       files.forEach((file) => {
