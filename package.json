@@ -1,6 +1,6 @@
 {
   "name": "sequenice",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An object-oriented model definition alternative for `sequelize`",
   "main": "./dist/sequenice.js",
   "scripts": {
