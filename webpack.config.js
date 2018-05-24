@@ -19,7 +19,7 @@ module.exports = {
   externals: {
     globule: 'commonjs globule',
     lodash: 'commonjs lodash',
-    'sequelize/lib/data-types': 'commonjs sequelize/lib/data-types'
+    sequelize: 'commonjs sequelize'
   },
 
   module: {

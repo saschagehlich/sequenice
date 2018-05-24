@@ -5,7 +5,7 @@ import fs from 'fs'
 import _ from 'lodash'
 
 import globule from 'globule'
-import DataTypes from 'sequelize/lib/data-types'
+import { DataTypes } from 'sequelize'
 
 export default class Sequenize {
   constructor (sequelize, options) {

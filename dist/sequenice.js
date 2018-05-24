@@ -95,7 +95,7 @@ module.exports = require("path");
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("sequelize/lib/data-types");
+module.exports = require("sequelize");
 
 /***/ }),
 /* 5 */
@@ -127,9 +127,7 @@ var _globule = __webpack_require__(1);
 
 var _globule2 = _interopRequireDefault(_globule);
 
-var _dataTypes = __webpack_require__(4);
-
-var _dataTypes2 = _interopRequireDefault(_dataTypes);
+var _sequelize = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -151,7 +149,8 @@ var Sequenize = function () {
       modelsDirectory: null,
       modelsAttacher: global,
       getterPrefix: '_get',
-      setterPrefix: '_set'
+      setterPrefix: '_set',
+      modelsMatch: /\.(js|coffee)$/i
     });
 
     this._loadModels();
@@ -189,7 +188,9 @@ var Sequenize = function () {
 
         var files = _globule2.default.find('**/*', {
           cwd: modelsDirectory,
-          filter: 'isFile'
+          filter: function filter(f) {
+            return _fs2.default.statSync(f).isFile() && _this._options.modelsMatch.test(f);
+          }
         });
 
         files.forEach(function (file) {
@@ -491,8 +492,8 @@ var Sequenize = function () {
   }, {
     key: '_attachDataTypesToMap',
     value: function _attachDataTypesToMap(map) {
-      for (var key in _dataTypes2.default) {
-        map[key] = _dataTypes2.default[key];
+      for (var key in _sequelize.DataTypes) {
+        map[key] = _sequelize.DataTypes[key];
       }
     }
 
